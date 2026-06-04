@@ -1,0 +1,297 @@
+export interface OrganizationDepartmentGroup {
+  group: string;
+  departments: string[];
+}
+
+export const ORGANIZATION_DEPARTMENTS: OrganizationDepartmentGroup[] = [
+  {
+    group: 'MD',
+    departments: ["MD's office", 'Procurement'],
+  },
+  {
+    group: 'Engineering',
+    departments: ['Technical services', 'Innovation', 'IT', 'SCC', 'NOC', 'Broadband'],
+  },
+  {
+    group: 'Marketing and Admin',
+    departments: ['Human capital management/HR', 'Account', 'Audit', 'Admin', 'Maintenance'],
+  },
+];
+
+export interface CareerCategory {
+  category: string;
+  careers: string[];
+}
+
+export const CAREER_INTEREST_CATEGORIES: CareerCategory[] = [
+  {
+    category: 'Technology & Engineering',
+    careers: [
+      'Software Engineering',
+      'Cybersecurity',
+      'Data Science & Analytics',
+      'Artificial Intelligence / Machine Learning',
+      'Cloud Computing',
+      'DevOps & Site Reliability',
+      'Network Engineering',
+      'Embedded Systems',
+      'Robotics & Automation',
+      'Blockchain & Web3',
+    ],
+  },
+  {
+    category: 'Design & Product',
+    careers: [
+      'UI/UX Design',
+      'Product Management',
+      'Graphic Design',
+      'Motion Design & Animation',
+      'Brand Design',
+      'Industrial / Product Design',
+      'Game Design',
+    ],
+  },
+  {
+    category: 'Sciences',
+    careers: [
+      'Research & Development',
+      'Environmental Science',
+      'Biotechnology',
+      'Chemistry',
+      'Physics & Material Science',
+      'Geology & Earth Science',
+      'Statistics & Applied Mathematics',
+    ],
+  },
+  {
+    category: 'Health & Medicine',
+    careers: [
+      'Clinical Medicine',
+      'Nursing & Midwifery',
+      'Pharmacy',
+      'Public Health',
+      'Biomedical Science',
+      'Physiotherapy',
+      'Radiology & Medical Imaging',
+      'Healthcare Administration',
+    ],
+  },
+  {
+    category: 'Social Sciences',
+    careers: [
+      'Psychology & Counselling',
+      'Sociology',
+      'Political Science & Governance',
+      'Economics',
+      'International Relations & Diplomacy',
+      'Anthropology',
+      'Social Work',
+    ],
+  },
+  {
+    category: 'Arts & Creative Industries',
+    careers: [
+      'Creative Writing & Storytelling',
+      'Visual Arts & Illustration',
+      'Photography',
+      'Music Production',
+      'Film & Video Production',
+      'Fashion Design',
+      'Interior Design',
+      'Performing Arts',
+    ],
+  },
+  {
+    category: 'Communication & Media',
+    careers: [
+      'Journalism',
+      'Public Relations',
+      'Digital Marketing & Content',
+      'Social Media Management',
+      'Advertising & Copywriting',
+      'Broadcasting',
+      'Publishing & Editing',
+    ],
+  },
+  {
+    category: 'Management & Strategy',
+    careers: [
+      'Project Management',
+      'Operations Management',
+      'Supply Chain & Logistics',
+      'Strategy Consulting',
+      'Entrepreneurship & Startups',
+      'Human Resources Management',
+      'Business Analysis',
+    ],
+  },
+  {
+    category: 'Business & Finance',
+    careers: [
+      'Accounting & Auditing',
+      'Investment Banking',
+      'Financial Analysis',
+      'Fintech',
+      'Insurance',
+      'Risk Management',
+      'Corporate Finance',
+      'Tax & Compliance',
+    ],
+  },
+  {
+    category: 'Law & Policy',
+    careers: [
+      'Corporate Law',
+      'Litigation & Legal Practice',
+      'Public Policy & Regulation',
+      'Intellectual Property',
+      'Human Rights Law',
+      'Compliance & Legal Risk',
+      'Legislative Affairs',
+    ],
+  },
+  {
+    category: 'Education & Training',
+    careers: [
+      'Teaching & Academic Research',
+      'Curriculum Development',
+      'E-Learning & EdTech',
+      'Corporate Training & Development',
+      'Education Administration',
+      'Special Needs Education',
+    ],
+  },
+  {
+    category: 'Agriculture & Environment',
+    careers: [
+      'Agribusiness & Agritech',
+      'Animal Science',
+      'Crop Science & Agronomy',
+      'Environmental Management',
+      'Food Science & Technology',
+      'Forestry & Wildlife Management',
+      'Climate & Sustainability',
+    ],
+  },
+  {
+    category: 'Architecture & Built Environment',
+    careers: [
+      'Architecture',
+      'Civil & Structural Engineering',
+      'Urban Planning',
+      'Quantity Surveying',
+      'Estate Management & Real Estate',
+      'Mechanical Engineering',
+      'Electrical Engineering',
+    ],
+  },
+  {
+    category: 'Hospitality & Tourism',
+    careers: [
+      'Hotel & Hospitality Management',
+      'Event Management',
+      'Tourism & Travel',
+      'Culinary Arts & Food Service',
+      'Recreation & Leisure Management',
+    ],
+  },
+];
+
+export const ENJOYED_SKILLS_OPTIONS: string[] = [
+  'Coding / Programming',
+  'Data Analysis',
+  'Problem Solving',
+  'Critical Thinking',
+  'Research & Investigation',
+  'Writing & Editing',
+  'Public Speaking',
+  'Storytelling',
+  'Teaching & Mentoring',
+  'Negotiation',
+  'Strategic Planning',
+  'Project Management',
+  'Team Leadership',
+  'Community Building',
+  'Conflict Resolution',
+  'Graphic Design',
+  'Video Editing',
+  'Photography',
+  'Music & Audio Production',
+  'Drawing & Illustration',
+  'UI/UX Prototyping',
+  'Social Media Management',
+  'Copywriting',
+  'Financial Modelling',
+  'Accounting & Bookkeeping',
+  'Market Research',
+  'Sales & Persuasion',
+  'Customer Service',
+  'Logistics & Coordination',
+  'Event Planning',
+  'Facilitation & Workshops',
+  'Cooking / Culinary Arts',
+  'Gardening & Horticulture',
+  'Mechanical / Hands-on Work',
+  'Electronics & Hardware',
+  'Networking & Infrastructure',
+  'Cybersecurity Analysis',
+  'Machine Learning / AI',
+  'Database Management',
+  'System Administration',
+  'Legal Research',
+  'Policy Analysis',
+  'Medical / Clinical Skills',
+  'Laboratory Work',
+  'Field Research',
+  'Environmental Monitoring',
+  'Translation & Interpretation',
+  'Counselling & Active Listening',
+  'Fundraising',
+  'Budgeting & Resource Allocation',
+  'Innovation & Ideation',
+  'Prototyping & Making',
+  'Data Visualisation',
+  'Report Writing',
+  'Client / Stakeholder Management',
+];
+
+export const WORK_ENVIRONMENT_OPTIONS: string[] = [
+  'Fully remote',
+  'Hybrid',
+  'On-site',
+  'Flexible (I decide day by day)',
+];
+
+export const PRIMARY_MOTIVATION_OPTIONS: string[] = [
+  'Financial security and wealth building',
+  'Making a meaningful social impact',
+  'Creative expression and originality',
+  'Intellectual challenge and learning',
+  'Recognition and career prestige',
+  'Independence and autonomy',
+  'Building something of my own',
+  'Helping and supporting people directly',
+  'Leading and influencing others',
+  'Stability and work-life balance',
+  'Adventure and variety in work',
+  'Mastery of a specific craft or skill',
+  'Collaboration and teamwork',
+  'Problem-solving and innovation',
+  'Contributing to national development',
+  'Building a legacy',
+  'Continuous personal growth',
+  'Global reach and international exposure',
+  'Community belonging and connection',
+  'Efficiency and optimising systems',
+];
+
+export const BIGGEST_STRENGTH_OPTIONS: string[] = [
+  'Analytical thinking — I break problems into parts and find solutions systematically',
+  'Creativity — I generate original ideas and approach things differently',
+  'Leadership — I naturally take charge and inspire others to move toward a goal',
+  'Empathy — I understand people deeply and build strong relationships',
+  'Execution — I get things done, follow through, and deliver results',
+  'Communication — I express ideas clearly and persuasively in any medium',
+  'Resilience — I stay grounded and push forward when things get hard',
+  'Curiosity — I ask the right questions and never stop learning',
+];
