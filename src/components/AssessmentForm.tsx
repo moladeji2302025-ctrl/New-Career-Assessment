@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { AnswerMap, AnswerValue } from '../types/question';
 import type { SubmissionResult } from '../types/assessment';
 import {
@@ -10,11 +10,47 @@ import ProgressBar from './ui/ProgressBar';
 import QuestionPage from './QuestionPage';
 import ReviewPage from './ReviewPage';
 
+const STORAGE_KEY = 'career-assessment-v1';
+
+interface PersistedState {
+  answers: AnswerMap;
+  currentIndex: number;
+  showReview: boolean;
+}
+
+function loadProgress(): PersistedState | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as PersistedState;
+  } catch {
+    return null;
+  }
+}
+
+function saveProgress(state: PersistedState) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // storage quota exceeded or private browsing — fail silently
+  }
+}
+
+function clearProgress() {
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
 export default function AssessmentForm() {
-  const [answers, setAnswers] = useState<AnswerMap>({});
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const saved = useMemo(() => loadProgress(), []);
+
+  const [answers, setAnswers] = useState<AnswerMap>(saved?.answers ?? {});
+  const [currentIndex, setCurrentIndex] = useState(saved?.currentIndex ?? 0);
   const [slideDirection, setSlideDirection] = useState<'forward' | 'back'>('forward');
-  const [showReview, setShowReview] = useState(false);
+  const [showReview, setShowReview] = useState(saved?.showReview ?? false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
@@ -23,7 +59,19 @@ export default function AssessmentForm() {
   // Recompute active questions whenever answers change (handles group switching)
   const activeQuestions = useMemo(() => getActiveQuestions(answers), [answers]);
 
-  const currentQuestion = activeQuestions[currentIndex];
+  // Clamp restored index in case question list shrank (e.g. group changed)
+  const safeIndex = Math.min(currentIndex, Math.max(0, activeQuestions.length - 1));
+  useEffect(() => {
+    if (safeIndex !== currentIndex) setCurrentIndex(safeIndex);
+  }, [safeIndex, currentIndex]);
+
+  // Persist progress on every meaningful state change
+  useEffect(() => {
+    if (submissionResult) return; // don't overwrite with a completed state
+    saveProgress({ answers, currentIndex: safeIndex, showReview });
+  }, [answers, safeIndex, showReview, submissionResult]);
+
+  const currentQuestion = activeQuestions[safeIndex];
   const totalQuestions = activeQuestions.length;
 
   const handleAnswer = (id: string, value: AnswerValue) => {
@@ -74,7 +122,7 @@ export default function AssessmentForm() {
     if (err) { setError(err); return; }
     setError(null);
 
-    if (currentIndex >= totalQuestions - 1) {
+    if (safeIndex >= totalQuestions - 1) {
       setSlideDirection('forward');
       setShowReview(true);
       scrollTop();
@@ -93,7 +141,7 @@ export default function AssessmentForm() {
       scrollTop();
       return;
     }
-    if (currentIndex > 0) {
+    if (safeIndex > 0) {
       setSlideDirection('back');
       setCurrentIndex(i => i - 1);
       scrollTop();
@@ -114,6 +162,7 @@ export default function AssessmentForm() {
       if (!res.ok) {
         setSubmissionError((json.detail as string) ?? 'Something went wrong. Please try again.');
       } else {
+        clearProgress(); // wipe saved progress — report is ready
         setSubmissionResult(json as unknown as SubmissionResult);
         scrollTop();
       }
@@ -125,6 +174,7 @@ export default function AssessmentForm() {
   };
 
   const handleReset = () => {
+    clearProgress();
     setAnswers({});
     setCurrentIndex(0);
     setSlideDirection('forward');
@@ -137,7 +187,7 @@ export default function AssessmentForm() {
   };
 
   // Progress: question index out of total + review step
-  const progressStep = showReview ? totalQuestions + 1 : currentIndex + 1;
+  const progressStep = showReview ? totalQuestions + 1 : safeIndex + 1;
   const progressTotal = totalQuestions + 1;
 
   return (
@@ -166,11 +216,11 @@ export default function AssessmentForm() {
             allAnswers={answers}
             onChange={handleAnswer}
             error={error}
-            questionNumber={currentIndex + 1}
+            questionNumber={safeIndex + 1}
             totalQuestions={totalQuestions}
             onNext={handleNext}
             onBack={handleBack}
-            isFirst={currentIndex === 0}
+            isFirst={safeIndex === 0}
             slideDirection={slideDirection}
           />
         ) : null}
