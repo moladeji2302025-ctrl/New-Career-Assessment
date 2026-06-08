@@ -40,12 +40,24 @@ export default function QuestionPage({
     }
   }, [question.id, question.type]);
 
+  const isMultiSelectCard = question.type === 'single-select-card' && question.multiSelect === true;
+
   const strVal = (value as string) ?? '';
+  // For multi-select cards, value is always an array; for single-select cards, a string
   const arrVal = (value as string[]) ?? [];
 
   const handleCardSelect = (v: string) => {
-    onChange(question.id, v);
-    setTimeout(onNext, 280);
+    if (isMultiSelectCard) {
+      // Toggle the value in the array; no auto-advance
+      const current = Array.isArray(value) ? (value as string[]) : [];
+      const next = current.includes(v)
+        ? current.filter(x => x !== v)
+        : [...current, v];
+      onChange(question.id, next);
+    } else {
+      onChange(question.id, v);
+      setTimeout(onNext, 280);
+    }
   };
 
   const togglePill = (item: string) => {
@@ -158,40 +170,50 @@ export default function QuestionPage({
           </select>
         )}
 
-        {/* SINGLE SELECT CARD */}
+        {/* SINGLE SELECT CARD (also handles multi-select variant) */}
         {question.type === 'single-select-card' && (
-          <div
-            className={`option-cards-grid option-cards-grid--cols-${question.columns ?? 1}`}
-            role="radiogroup"
-            aria-label={question.question}
-          >
-            {question.options?.map(opt => (
-              <div
-                key={opt.value}
-                className={`option-card-full${strVal === opt.value ? ' option-card-full--selected' : ''}`}
-                role="radio"
-                aria-checked={strVal === opt.value}
-                tabIndex={0}
-                onClick={() => handleCardSelect(opt.value)}
-                onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); handleCardSelect(opt.value); } }}
-              >
-                <div className="option-card-full__indicator" aria-hidden="true" />
-                <div className="option-card-full__content">
-                  <span className="option-card-full__label">{opt.label}</span>
-                  {opt.description && (
-                    <span className="option-card-full__desc">{opt.description}</span>
-                  )}
-                </div>
-                {strVal === opt.value && (
-                  <div className="option-card-full__check" aria-hidden="true">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
+          <>
+            <div
+              className={`option-cards-grid option-cards-grid--cols-${question.columns ?? 1}`}
+              role={isMultiSelectCard ? 'group' : 'radiogroup'}
+              aria-label={question.question}
+            >
+              {question.options?.map(opt => {
+                const isSelected = isMultiSelectCard
+                  ? arrVal.includes(opt.value)
+                  : strVal === opt.value;
+                return (
+                  <div
+                    key={opt.value}
+                    className={`option-card-full${isSelected ? ' option-card-full--selected' : ''}${isMultiSelectCard ? ' option-card-full--checkbox' : ''}`}
+                    role={isMultiSelectCard ? 'checkbox' : 'radio'}
+                    aria-checked={isSelected}
+                    tabIndex={0}
+                    onClick={() => handleCardSelect(opt.value)}
+                    onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); handleCardSelect(opt.value); } }}
+                  >
+                    <div className={`option-card-full__indicator${isMultiSelectCard ? ' option-card-full__indicator--square' : ''}`} aria-hidden="true" />
+                    <div className="option-card-full__content">
+                      <span className="option-card-full__label">{opt.label}</span>
+                      {opt.description && (
+                        <span className="option-card-full__desc">{opt.description}</span>
+                      )}
+                    </div>
+                    {isSelected && (
+                      <div className="option-card-full__check" aria-hidden="true">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+                );
+              })}
+            </div>
+            {isMultiSelectCard && arrVal.length > 0 && (
+              <p className="selection-count">{arrVal.length} selected</p>
+            )}
+          </>
         )}
 
         {/* MULTI SELECT PILL */}
@@ -238,8 +260,31 @@ export default function QuestionPage({
         )}
       </div>
 
-      {/* Navigation — hidden for auto-advance card selects */}
-      {question.type !== 'single-select-card' && (
+      {/* Navigation */}
+      {/* Single-select card: auto-advances, so only show Back + a Continue if already answered */}
+      {question.type === 'single-select-card' && !isMultiSelectCard && (
+        <div className={`question-nav ${isFirst ? 'question-nav--right' : 'question-nav--back-only'}`}>
+          {!isFirst && (
+            <button type="button" className="btn-secondary" onClick={onBack}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+              </svg>
+              Back
+            </button>
+          )}
+          {strVal && (
+            <button type="button" className="btn-primary" onClick={onNext}>
+              Continue
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Multi-select card + all non-card types: always show Back/Continue */}
+      {(isMultiSelectCard || question.type !== 'single-select-card') && (
         <div className="question-nav">
           {!isFirst && (
             <button type="button" className="btn-secondary" onClick={onBack}>
@@ -255,38 +300,6 @@ export default function QuestionPage({
             onClick={onNext}
             style={isFirst ? { marginLeft: 'auto' } : {}}
           >
-            {question.required ? 'Continue' : 'Continue'}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-            </svg>
-          </button>
-        </div>
-      )}
-
-      {/* Back only — for card selects (auto-advance on pick, but back still needed) */}
-      {question.type === 'single-select-card' && !isFirst && (
-        <div className="question-nav question-nav--back-only">
-          <button type="button" className="btn-secondary" onClick={onBack}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
-            </svg>
-            Back
-          </button>
-          {strVal && (
-            <button type="button" className="btn-primary" onClick={onNext}>
-              Continue
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
-          )}
-        </div>
-      )}
-
-      {/* First question, card type (no back) */}
-      {question.type === 'single-select-card' && isFirst && strVal && (
-        <div className="question-nav question-nav--right">
-          <button type="button" className="btn-primary" onClick={onNext}>
             Continue
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />

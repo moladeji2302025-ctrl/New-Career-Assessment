@@ -37,4 +37,5 @@ export interface Question {
   datalistOptions?: string[];
   minSelections?: number;
   columns?: 1 | 2;
+  multiSelect?: boolean; // single-select-card questions that allow multiple picks
 }

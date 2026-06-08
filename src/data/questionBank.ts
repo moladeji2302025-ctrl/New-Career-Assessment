@@ -115,6 +115,16 @@ const FIXED_QUESTIONS: Question[] = [
   },
 ];
 
+// Scenario questions where multiple answers can genuinely apply at once
+const MULTI_SELECT_SCENARIO_IDS = new Set([
+  'sq_energy_drain',     // multiple things can drain you
+  'sq_free_saturday',    // you can do more than one thing on a free day
+  'sq_tools_enjoy',      // you can be comfortable with more than one tool type
+  'sq_side_project',     // you might have more than one type of side project in mind
+  'sq_achievement_type', // more than one achievement type can feel meaningful
+  'sq_new_skill',        // you may want training in more than one area
+]);
+
 const SHUFFLEABLE_QUESTIONS: Question[] = [
   {
     id: 'q_career_interests',
@@ -191,7 +201,7 @@ const SHUFFLEABLE_QUESTIONS: Question[] = [
     shuffleable: true,
     rows: 3,
   },
-  // 20 scenario questions
+  // 20 scenario questions — multi-select where more than one answer can genuinely apply
   ...SCENARIO_QUESTIONS.map(sq => ({
     id: sq.id,
     type: 'single-select-card' as const,
@@ -199,6 +209,7 @@ const SHUFFLEABLE_QUESTIONS: Question[] = [
     required: false,
     shuffleable: true,
     columns: 1 as const,
+    multiSelect: MULTI_SELECT_SCENARIO_IDS.has(sq.id),
     options: sq.options.map(o => ({ value: o.value, label: o.label })),
   })),
 ];
@@ -224,7 +235,9 @@ export function buildPayload(answers: AnswerMap): AIAnalysisPayload {
   const scenarioResponses: Record<string, string> = {};
   for (const sq of SCENARIO_QUESTIONS) {
     const v = answers[sq.id];
-    if (v) scenarioResponses[sq.id] = v as string;
+    if (!v) continue;
+    // Multi-select answers are arrays — join for the AI prompt
+    scenarioResponses[sq.id] = Array.isArray(v) ? v.join(' | ') : (v as string);
   }
 
   const base: AIAnalysisPayload = {
