@@ -1,240 +1,155 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import type { AnswerMap, AnswerValue } from '../types/question';
+import type { SubmissionResult } from '../types/assessment';
+import {
+  getActiveQuestions,
+  buildPayload,
+  resolveAutofill,
+} from '../data/questionBank';
 import ProgressBar from './ui/ProgressBar';
-import StepIndicator from './ui/StepIndicator';
-import Welcome from './steps/Welcome';
-import GroupSelection from './steps/GroupSelection';
-import BasicInfo from './steps/BasicInfo';
-import SubtleQuestions from './steps/SubtleQuestions';
-import Review from './steps/Review';
-import type {
-  AssessmentFormData,
-  ValidationErrors,
-  GroupType,
-  SubmissionResult,
-  AIAnalysisPayload,
-} from '../types/assessment';
-
-const INITIAL_FORM_DATA: AssessmentFormData = {
-  respondentName: '',
-  group: 'IT_STUDENT',
-  common: { organizationDepartment: '' },
-  itStudent: { schoolProgram: '', expectedCompletionDate: '' },
-  nyscCorpMember: { programStudied: '', degreeRequired: '', serviceEndDate: '' },
-  interestsAndSkills: {
-    careerInterests: [],
-    enjoyedSkills: [],
-    workEnvironment: '',
-    primaryMotivation: '',
-    biggestStrength: '',
-    shortTermGoal: '',
-    longTermGoal: '',
-    scenarioResponses: {},
-  },
-};
-
-type Step = 1 | 2 | 3 | 4 | 5;
-
-function buildAIPayload(data: AssessmentFormData): AIAnalysisPayload {
-  const base = {
-    respondentName: data.respondentName,
-    respondentGroup: data.group,
-    organizationDepartment: data.common.organizationDepartment,
-    careerInterests: data.interestsAndSkills.careerInterests,
-    enjoyedSkills: data.interestsAndSkills.enjoyedSkills,
-    workEnvironment: data.interestsAndSkills.workEnvironment,
-    primaryMotivation: data.interestsAndSkills.primaryMotivation,
-    biggestStrength: data.interestsAndSkills.biggestStrength,
-    shortTermGoal: data.interestsAndSkills.shortTermGoal,
-    longTermGoal: data.interestsAndSkills.longTermGoal,
-    scenarioResponses: data.interestsAndSkills.scenarioResponses,
-  };
-
-  if (data.group === 'IT_STUDENT') {
-    return {
-      ...base,
-      schoolProgram: data.itStudent.schoolProgram,
-      expectedCompletionDate: data.itStudent.expectedCompletionDate,
-    };
-  }
-
-  return {
-    ...base,
-    programStudied: data.nyscCorpMember.programStudied,
-    degreeRequired: data.nyscCorpMember.degreeRequired,
-    serviceEndDate: data.nyscCorpMember.serviceEndDate,
-  };
-}
+import QuestionPage from './QuestionPage';
+import ReviewPage from './ReviewPage';
 
 export default function AssessmentForm() {
-  const [step, setStep] = useState<Step>(1);
+  const [answers, setAnswers] = useState<AnswerMap>({});
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<'forward' | 'back'>('forward');
-  const [formData, setFormData] = useState<AssessmentFormData>(INITIAL_FORM_DATA);
-  const [errors, setErrors] = useState<ValidationErrors>({});
+  const [showReview, setShowReview] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  const patchForm = (patch: Partial<AssessmentFormData>) =>
-    setFormData(prev => ({ ...prev, ...patch }));
+  // Recompute active questions whenever answers change (handles group switching)
+  const activeQuestions = useMemo(() => getActiveQuestions(answers), [answers]);
 
-  const validateStep = (s: Step): ValidationErrors => {
-    const errs: ValidationErrors = {};
-    if (s === 1) {
-      if (!formData.respondentName.trim() || formData.respondentName.trim().length < 2) {
-        errs.respondentName = 'Please enter your full name (at least 2 characters).';
+  const currentQuestion = activeQuestions[currentIndex];
+  const totalQuestions = activeQuestions.length;
+
+  const handleAnswer = (id: string, value: AnswerValue) => {
+    setError(null);
+    setAnswers(prev => {
+      const next = { ...prev, [id]: value };
+
+      // Auto-fill degree when program studied changes
+      if (id === 'q_program_studied') {
+        const resolved = resolveAutofill('q_degree', next);
+        if (resolved) next.q_degree = resolved;
       }
-    }
-    if (s === 2) {
-      if (!formData.group) errs.group = 'Please select your group to continue.';
-    }
-    if (s === 3) {
-      if (!formData.common.organizationDepartment)
-        errs.organizationDepartment = 'Please select your department.';
-      if (formData.group === 'IT_STUDENT') {
-        if (!formData.itStudent.schoolProgram) errs.schoolProgram = 'Please select your programme.';
-        if (!formData.itStudent.expectedCompletionDate)
-          errs.expectedCompletionDate = 'Please enter your expected completion date.';
-      } else {
-        if (!formData.nyscCorpMember.programStudied)
-          errs.programStudied = 'Please enter your programme studied.';
-        if (!formData.nyscCorpMember.degreeRequired)
-          errs.degreeRequired = 'Please enter your degree.';
-        if (!formData.nyscCorpMember.serviceEndDate)
-          errs.serviceEndDate = 'Please enter your service end date.';
+
+      // Clear group-specific answers when group changes
+      if (id === 'q_group' && prev.q_group !== value) {
+        delete next.q_school_program;
+        delete next.q_completion_date;
+        delete next.q_program_studied;
+        delete next.q_degree;
+        delete next.q_service_end;
       }
-    }
-    if (s === 4) {
-      const ias = formData.interestsAndSkills;
-      if (ias.careerInterests.length === 0)
-        errs.careerInterests = 'Please select at least one career interest.';
-      if (ias.enjoyedSkills.length === 0)
-        errs.enjoyedSkills = 'Please select at least one skill.';
-      if (!ias.workEnvironment)
-        errs.workEnvironment = 'Please select your preferred work environment.';
-      if (!ias.primaryMotivation)
-        errs.primaryMotivation = 'Please select your primary motivation.';
-      if (!ias.biggestStrength)
-        errs.biggestStrength = 'Please select your biggest strength.';
-      if (!ias.shortTermGoal.trim())
-        errs.shortTermGoal = 'Please describe your short-term goal.';
-      if (!ias.longTermGoal.trim())
-        errs.longTermGoal = 'Please describe your long-term goal.';
-    }
-    return errs;
+
+      return next;
+    });
   };
 
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  const validateCurrent = (): string | null => {
+    if (!currentQuestion) return null;
+    if (!currentQuestion.required) return null;
+
+    const val = answers[currentQuestion.id];
+    if (!val) return 'Please answer this question to continue.';
+    if (typeof val === 'string' && val.trim() === '') return 'Please answer this question to continue.';
+    if (Array.isArray(val)) {
+      const min = currentQuestion.minSelections ?? 1;
+      if (val.length < min) return `Please select at least ${min} option${min > 1 ? 's' : ''}.`;
+    }
+    if (currentQuestion.id === 'q_name' && (val as string).trim().length < 2) {
+      return 'Please enter your full name (at least 2 characters).';
+    }
+    return null;
+  };
+
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const handleNext = () => {
-    const errs = validateStep(step);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
+    const err = validateCurrent();
+    if (err) { setError(err); return; }
+    setError(null);
+
+    if (currentIndex >= totalQuestions - 1) {
+      setSlideDirection('forward');
+      setShowReview(true);
+      scrollTop();
+    } else {
+      setSlideDirection('forward');
+      setCurrentIndex(i => i + 1);
+      scrollTop();
     }
-    setErrors({});
-    setSlideDirection('forward');
-    setStep(prev => Math.min(5, prev + 1) as Step);
-    scrollToTop();
   };
 
   const handleBack = () => {
-    setErrors({});
-    setSlideDirection('back');
-    setStep(prev => Math.max(1, prev - 1) as Step);
-    scrollToTop();
-  };
-
-  const handleGroupSelect = (group: GroupType) => {
-    patchForm({ group });
-    setErrors({});
-    setTimeout(() => {
-      setSlideDirection('forward');
-      setStep(3);
-      scrollToTop();
-    }, 200);
+    setError(null);
+    if (showReview) {
+      setSlideDirection('back');
+      setShowReview(false);
+      scrollTop();
+      return;
+    }
+    if (currentIndex > 0) {
+      setSlideDirection('back');
+      setCurrentIndex(i => i - 1);
+      scrollTop();
+    }
   };
 
   const handleSubmit = async () => {
     setSubmissionError(null);
     setIsSubmitting(true);
     try {
-      const payload = buildAIPayload(formData);
+      const payload = buildPayload(answers);
       const res = await fetch('/api/assessments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      const json = await res.json();
+      const json = await res.json() as Record<string, unknown>;
       if (!res.ok) {
-        setSubmissionError(json.detail ?? 'Something went wrong. Please try again.');
+        setSubmissionError((json.detail as string) ?? 'Something went wrong. Please try again.');
       } else {
-        setSubmissionResult(json as SubmissionResult);
-        scrollToTop();
+        setSubmissionResult(json as unknown as SubmissionResult);
+        scrollTop();
       }
     } catch {
-      setSubmissionError('Network error. Please check your connection and try again.');
+      setSubmissionError('Network error — please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleReset = () => {
-    setFormData(INITIAL_FORM_DATA);
-    setErrors({});
+    setAnswers({});
+    setCurrentIndex(0);
+    setSlideDirection('forward');
+    setShowReview(false);
+    setError(null);
+    setIsSubmitting(false);
     setSubmissionResult(null);
     setSubmissionError(null);
-    setIsSubmitting(false);
-    setSlideDirection('forward');
-    setStep(1);
-    scrollToTop();
+    scrollTop();
   };
 
-  const cardClass = `step-card step-card--${slideDirection}`;
+  // Progress: question index out of total + review step
+  const progressStep = showReview ? totalQuestions + 1 : currentIndex + 1;
+  const progressTotal = totalQuestions + 1;
 
   return (
     <div className="app-root">
-      <ProgressBar step={step} totalSteps={5} />
+      <ProgressBar step={progressStep} totalSteps={progressTotal} />
 
       <div className="form-wrapper">
-        <StepIndicator currentStep={step} />
-
-        <div className={cardClass} key={step}>
-          {step === 1 && (
-            <Welcome
-              respondentName={formData.respondentName}
-              onChange={name => patchForm({ respondentName: name })}
-              errors={errors}
-              onNext={handleNext}
-            />
-          )}
-          {step === 2 && (
-            <GroupSelection
-              selected={formData.group}
-              onSelect={handleGroupSelect}
-              errors={errors}
-            />
-          )}
-          {step === 3 && (
-            <BasicInfo
-              formData={formData}
-              errors={errors}
-              onChange={patchForm}
-              onNext={handleNext}
-              onBack={handleBack}
-            />
-          )}
-          {step === 4 && (
-            <SubtleQuestions
-              formData={formData}
-              errors={errors}
-              onChange={patchForm}
-              onNext={handleNext}
-              onBack={handleBack}
-            />
-          )}
-          {step === 5 && (
-            <Review
-              formData={formData}
+        {showReview ? (
+          <div className="step-card step-card--forward" key="review">
+            <ReviewPage
+              activeQuestions={activeQuestions}
+              answers={answers}
               isSubmitting={isSubmitting}
               submissionResult={submissionResult}
               submissionError={submissionError}
@@ -242,8 +157,23 @@ export default function AssessmentForm() {
               onBack={handleBack}
               onReset={handleReset}
             />
-          )}
-        </div>
+          </div>
+        ) : currentQuestion ? (
+          <QuestionPage
+            key={currentQuestion.id}
+            question={currentQuestion}
+            value={answers[currentQuestion.id]}
+            allAnswers={answers}
+            onChange={handleAnswer}
+            error={error}
+            questionNumber={currentIndex + 1}
+            totalQuestions={totalQuestions}
+            onNext={handleNext}
+            onBack={handleBack}
+            isFirst={currentIndex === 0}
+            slideDirection={slideDirection}
+          />
+        ) : null}
       </div>
     </div>
   );

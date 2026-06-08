@@ -7,9 +7,6 @@ interface AIResultPanelProps {
 }
 
 export default function AIResultPanel({ result, onReset }: AIResultPanelProps) {
-  const firstName = result.aiReport.match(/^.*$/m)?.[0] ?? 'You';
-  void firstName;
-
   return (
     <div className="ai-result">
       <div className="ai-result__header">

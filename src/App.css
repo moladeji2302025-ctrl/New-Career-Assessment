@@ -1068,7 +1068,275 @@ textarea {
   padding-top: 8px;
 }
 
-/* ─── 21. Form vertical stack spacing ───────────────────────────────────────── */
+/* ─── 21. Single-Question-Per-Page Layout ───────────────────────────────────── */
+
+/* Replace step-card animation with question-card (key-based remount) */
+.question-card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 48px 40px 36px;
+  border: 1px solid var(--border-subtle);
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-card--forward {
+  animation: slideInRight 280ms ease-out;
+}
+
+.question-card--back {
+  animation: slideInLeft 280ms ease-out;
+}
+
+/* Meta row: question counter + optional badge */
+.question-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.question-counter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+.question-counter__sep {
+  opacity: 0.5;
+  margin: 0 2px;
+}
+
+.question-optional-badge {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+}
+
+/* The question itself */
+.question-heading {
+  font-family: 'Clash Display', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+
+.question-hint {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 14px;
+  color: var(--text-tertiary);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.question-error {
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+/* Body area expands to fill card */
+.question-body {
+  flex: 1;
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Option card grid: 1 or 2 columns */
+.option-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-cards-grid--cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Full-width option card (replaces old OptionCard for per-page use) */
+.option-card-full {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+  position: relative;
+  user-select: none;
+  min-height: 56px;
+}
+
+.option-card-full:hover {
+  background: #1a2438;
+  border-color: rgba(255,255,255,0.16);
+  transform: scale(1.005);
+}
+
+.option-card-full:focus {
+  outline: none;
+  box-shadow: var(--shadow-glow);
+}
+
+.option-card-full--selected {
+  background: var(--accent-muted);
+  border-color: var(--border-accent);
+  border-left: 3px solid var(--accent-primary);
+  padding-left: 15px;
+}
+
+.option-card-full__indicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-default);
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.option-card-full--selected .option-card-full__indicator {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary);
+  position: relative;
+}
+
+.option-card-full--selected .option-card-full__indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-inverse);
+}
+
+.option-card-full__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.option-card-full__label {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.option-card-full--selected .option-card-full__label {
+  color: var(--text-primary);
+}
+
+.option-card-full__desc {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.option-card-full--selected .option-card-full__desc {
+  color: var(--text-secondary);
+}
+
+.option-card-full__check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scalePop 200ms ease;
+  flex-shrink: 0;
+}
+
+.option-card-full__check svg {
+  color: var(--text-inverse);
+}
+
+/* Selection counter under multi-selects */
+.selection-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent-primary);
+  margin-top: 4px;
+}
+
+/* Navigation row within question card */
+.question-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 32px;
+  gap: 12px;
+}
+
+.question-nav--back-only {
+  justify-content: space-between;
+}
+
+.question-nav--right {
+  justify-content: flex-end;
+}
+
+/* Review list */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-item__label {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.review-item__value {
+  font-family: 'Satoshi', sans-serif;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+/* ─── 22. Form vertical stack spacing ───────────────────────────────────────── */
 .form-stack {
   display: flex;
   flex-direction: column;
@@ -1100,19 +1368,23 @@ textarea {
     padding: 20px 16px 48px;
   }
 
-  .step-card {
-    padding: 28px 20px;
+  .step-card,
+  .question-card {
+    padding: 28px 20px 24px;
   }
 
-  .step-title {
-    font-size: 26px;
+  .step-title,
+  .question-heading {
+    font-size: 22px;
   }
 
   .subsection-title {
     font-size: 18px;
   }
 
-  .group-cards {
+  .group-cards,
+  .option-cards-grid--cols-2 {
+    grid-template-columns: 1fr;
     flex-direction: column;
   }
 
@@ -1126,6 +1398,16 @@ textarea {
 
   .step-pill__label {
     display: none;
+  }
+
+  .question-nav {
+    flex-direction: column-reverse;
+  }
+
+  .question-nav .btn-primary,
+  .question-nav .btn-secondary {
+    width: 100%;
+    justify-content: center;
   }
 }
 
