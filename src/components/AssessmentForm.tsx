@@ -196,7 +196,7 @@ export default function AssessmentForm() {
 
       <header className="org-header">
         <img
-          src="/nigcomsat-logo.png"
+          src="/WhatsApp_Image_2026-03-09_at_13.36.49-removebg-preview.png"
           alt="NigComSat — African Rooted, Globally Positioned"
           className="org-header__logo"
         />
