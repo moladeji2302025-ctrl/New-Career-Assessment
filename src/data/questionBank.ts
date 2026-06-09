@@ -184,6 +184,83 @@ const SHUFFLEABLE_QUESTIONS: Question[] = [
     }),
   },
   {
+    id: 'q_org_role_type',
+    type: 'single-select-card',
+    question: 'Within an organisation like NigComSat, which type of work would you find most fulfilling?',
+    hint: 'Think about where your skills and energy naturally belong — not what sounds most impressive.',
+    required: true,
+    shuffleable: true,
+    columns: 1,
+    options: [
+      {
+        value: 'Technical & Engineering',
+        label: 'Technical & Engineering',
+        description: 'Hands-on with systems, infrastructure, and technology — solving complex engineering and operational problems.',
+      },
+      {
+        value: 'Business & Commercial',
+        label: 'Business & Commercial',
+        description: 'Growing revenue, managing client relationships, sales, and driving the commercial side of the business.',
+      },
+      {
+        value: 'Finance & Compliance',
+        label: 'Finance & Compliance',
+        description: 'Managing budgets, auditing, procurement, and ensuring financial accuracy and regulatory compliance.',
+      },
+      {
+        value: 'Strategy & Corporate Affairs',
+        label: 'Strategy & Corporate Affairs',
+        description: "Shaping long-term direction, stakeholder communications, public relations, and the organisation's brand and positioning.",
+      },
+      {
+        value: 'People, Admin & Legal',
+        label: 'People, Admin & Legal',
+        description: 'Building strong teams, managing HR, handling legal matters, and ensuring smooth day-to-day operations.',
+      },
+      {
+        value: 'Innovation & Research',
+        label: 'Innovation & Research',
+        description: 'Developing new products, exploring emerging technologies, and solving problems at the frontier of your field.',
+      },
+    ],
+  },
+  {
+    id: 'q_collab_style',
+    type: 'single-select-card',
+    question: 'How do you naturally work best in a professional environment?',
+    hint: 'Choose the option that most accurately reflects how you operate — not how you wish you did.',
+    required: true,
+    shuffleable: true,
+    columns: 1,
+    options: [
+      {
+        value: 'Deep technical focus',
+        label: 'Deep technical focus',
+        description: 'I work best on focused technical problems — systems, equipment, data, and engineering details.',
+      },
+      {
+        value: 'External relationships',
+        label: 'External relationships',
+        description: "I thrive when representing the organisation — dealing with clients, partners, media, or government.",
+      },
+      {
+        value: 'Internal coordination',
+        label: 'Internal coordination',
+        description: "I'm most effective coordinating across teams, managing processes, and keeping operations running smoothly.",
+      },
+      {
+        value: 'Analysis & planning',
+        label: 'Analysis & planning',
+        description: 'I do my best work researching, analysing data, modelling scenarios, and developing strategic recommendations.',
+      },
+      {
+        value: 'People development',
+        label: 'People development',
+        description: 'I naturally focus on building people, team culture, training, and organisational capability.',
+      },
+    ],
+  },
+  {
     id: 'q_short_goal',
     type: 'textarea',
     question: 'Where do you want to be in the next 1–2 years?',
@@ -252,6 +329,8 @@ export function buildPayload(answers: AnswerMap): AIAnalysisPayload {
     shortTermGoal: (answers.q_short_goal as string) ?? '',
     longTermGoal: (answers.q_long_goal as string) ?? '',
     scenarioResponses,
+    organizationRolePreference: (answers.q_org_role_type as string) ?? '',
+    collaborationStyle: (answers.q_collab_style as string) ?? '',
   };
 
   if (group === 'IT_STUDENT') {

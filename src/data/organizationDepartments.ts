@@ -5,16 +5,52 @@ export interface OrganizationDepartmentGroup {
 
 export const ORGANIZATION_DEPARTMENTS: OrganizationDepartmentGroup[] = [
   {
-    group: 'MD',
-    departments: ["MD's office", 'Procurement'],
+    group: 'Executive',
+    departments: [
+      "MD's Office",
+      'ED Technical office',
+    ],
   },
   {
-    group: 'Engineering',
-    departments: ['Technical services', 'Innovation', 'IT', 'SCC', 'NOC', 'Broadband'],
+    group: 'Technical & Engineering',
+    departments: [
+      'Broadcast',
+      'Satellite Capital Management',
+      'Innovation and Satellite Application',
+      'Satellite Frequency Management',
+      'Power & Radio Frequency',
+      'Network Operating Center',
+      'IT Services',
+    ],
   },
   {
-    group: 'Marketing and Admin',
-    departments: ['Human capital management/HR', 'Account', 'Audit', 'Admin', 'Maintenance'],
+    group: 'Commercial & Marketing',
+    departments: [
+      'Regional Business office',
+      'Sales',
+      'Marketing',
+      'Broadband',
+      'Corporate Affairs Department',
+    ],
+  },
+  {
+    group: 'Finance & Planning',
+    departments: [
+      'Finance',
+      'Budget and Planning',
+      'Internal Audit',
+      'Procurement',
+    ],
+  },
+  {
+    group: 'Corporate Services',
+    departments: [
+      'Human Capital Management',
+      'Admin',
+      'Legal Services',
+      'SERVICOM',
+      'Corporate Strategy',
+    ],
   },
 ];
 

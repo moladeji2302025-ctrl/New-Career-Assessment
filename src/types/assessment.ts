@@ -59,6 +59,8 @@ export interface AIAnalysisPayload {
   shortTermGoal: string;
   longTermGoal: string;
   scenarioResponses: Record<string, string>;
+  organizationRolePreference?: string;
+  collaborationStyle?: string;
 }
 
 export type ValidationErrors = Partial<

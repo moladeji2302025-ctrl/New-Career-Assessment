@@ -369,12 +369,14 @@ The 8 questions that always appear in the same fixed positions:
 Questions 4–8 use a `condition` function — they only appear if the user selected the appropriate group in Question 2.
 
 **`SHUFFLEABLE_QUESTIONS` array**  
-The 27 questions that get shuffled:
+The 29 questions that get shuffled:
 - `q_career_interests` — Categorised multi-select of all career fields (14 categories, 100+ options)
 - `q_skills` — Multi-select of 55 skills/activities that energise the respondent
 - `q_work_env` — 4-option card for work environment preference
 - `q_motivation` — Dropdown of 20 motivation options
 - `q_strength` — 8-option card for biggest professional strength
+- `q_org_role_type` — 6-option card: which type of work within an organisation is most fulfilling (Technical & Engineering / Business & Commercial / Finance & Compliance / Strategy & Corporate Affairs / People, Admin & Legal / Innovation & Research). This question directly informs the department recommendation.
+- `q_collab_style` — 5-option card: natural working style within a professional environment (Deep technical focus / External relationships / Internal coordination / Analysis & planning / People development). Also directly informs the department recommendation.
 - `q_short_goal` — Textarea for 1–2 year goal
 - `q_long_goal` — Textarea for 5–10 year goal
 - 20 scenario questions (from `scenarioQuestions.ts`)
@@ -397,7 +399,15 @@ Converts the flat `AnswerMap` into the structured `AIAnalysisPayload` object tha
 **What it is:** All static option data for the organisation-specific and psychographic questions.  
 **What it contains:**
 
-- **`ORGANIZATION_DEPARTMENTS`** — Three groups (MD, Engineering, Marketing and Admin) each containing their department names. Used to populate the department dropdown with `<optgroup>` separators.
+- **`ORGANIZATION_DEPARTMENTS`** — Five groups containing all 23 NigComSat departments. Used to populate the department dropdown with `<optgroup>` separators:
+
+  | Group | Departments |
+  |---|---|
+  | **Executive** | MD's Office, ED Technical office |
+  | **Technical & Engineering** | Broadcast, Satellite Capital Management, Innovation and Satellite Application, Satellite Frequency Management, Power & Radio Frequency, Network Operating Center, IT Services |
+  | **Commercial & Marketing** | Regional Business office, Sales, Marketing, Broadband, Corporate Affairs Department |
+  | **Finance & Planning** | Finance, Budget and Planning, Internal Audit, Procurement |
+  | **Corporate Services** | Human Capital Management, Admin, Legal Services, SERVICOM, Corporate Strategy |
 
 - **`CAREER_INTEREST_CATEGORIES`** — 14 career categories, each containing a list of specific career paths. All 14 categories are:
   Technology & Engineering, Design & Product, Sciences, Health & Medicine, Social Sciences, Arts & Creative Industries, Communication & Media, Management & Strategy, Business & Finance, Law & Policy, Education & Training, Agriculture & Environment, Architecture & Built Environment, Hospitality & Tourism.
