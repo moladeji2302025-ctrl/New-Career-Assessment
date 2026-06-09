@@ -1,38 +1,38 @@
 /* ─── 1. CSS Custom Properties ──────────────────────────────────────────────── */
 :root {
-  --bg-base:       #080C14;
-  --bg-surface:    #0F1623;
-  --bg-elevated:   #161E2E;
-  --bg-overlay:    rgba(15, 22, 35, 0.92);
+  --bg-base:       #EEF3FA;
+  --bg-surface:    #FFFFFF;
+  --bg-elevated:   #F4F7FC;
+  --bg-overlay:    rgba(240, 244, 250, 0.96);
 
-  --accent-primary:          #F5A623;
-  --accent-glow:             rgba(245, 166, 35, 0.18);
-  --accent-muted:            rgba(245, 166, 35, 0.08);
+  --accent-primary:          #1B5FAF;
+  --accent-glow:             rgba(27, 95, 175, 0.12);
+  --accent-muted:            rgba(27, 95, 175, 0.07);
 
-  --accent-secondary:        #38BDF8;
-  --accent-secondary-muted:  rgba(56, 189, 248, 0.10);
+  --accent-secondary:        #3A8AC9;
+  --accent-secondary-muted:  rgba(58, 138, 201, 0.10);
 
-  --text-primary:   #F0F4FF;
-  --text-secondary: #8B95AA;
-  --text-tertiary:  #4A5568;
-  --text-inverse:   #080C14;
+  --text-primary:   #0C1B35;
+  --text-secondary: #4B5E7A;
+  --text-tertiary:  #8A97A8;
+  --text-inverse:   #FFFFFF;
 
-  --border-subtle:  rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.10);
-  --border-accent:  rgba(245, 166, 35, 0.40);
+  --border-subtle:  rgba(27, 95, 175, 0.08);
+  --border-default: rgba(27, 95, 175, 0.16);
+  --border-accent:  rgba(27, 95, 175, 0.40);
 
-  --color-success: #34D399;
-  --color-error:   #F87171;
-  --color-warning: #FBBF24;
+  --color-success: #059669;
+  --color-error:   #DC2626;
+  --color-warning: #D97706;
 
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
 
-  --shadow-card:   0 4px 24px rgba(0,0,0,0.5);
-  --shadow-accent: 0 0 32px rgba(245, 166, 35, 0.12);
-  --shadow-glow:   0 0 0 1px rgba(245, 166, 35, 0.25), 0 0 20px rgba(245, 166, 35, 0.08);
+  --shadow-card:   0 2px 20px rgba(13, 27, 64, 0.07);
+  --shadow-accent: 0 0 24px rgba(27, 95, 175, 0.10);
+  --shadow-glow:   0 0 0 2px rgba(27, 95, 175, 0.20), 0 0 12px rgba(27, 95, 175, 0.06);
 
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
@@ -46,8 +46,8 @@ html, body {
 body {
   background-color: var(--bg-base);
   background-image:
-    radial-gradient(ellipse at 20% 40%, rgba(245,166,35,0.04) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 70%, rgba(56,189,248,0.04) 0%, transparent 55%);
+    radial-gradient(ellipse at 15% 30%, rgba(27, 95, 175, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 75%, rgba(58, 138, 201, 0.04) 0%, transparent 55%);
   background-attachment: fixed;
   color: var(--text-primary);
   font-family: 'Satoshi', 'Segoe UI', sans-serif;
@@ -130,7 +130,7 @@ body {
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--border-subtle);
+  background: rgba(27, 95, 175, 0.12);
   z-index: 100;
 }
 
@@ -138,7 +138,7 @@ body {
   height: 100%;
   background: var(--accent-primary);
   transition: width 500ms cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px rgba(245, 166, 35, 0.6);
+  box-shadow: 0 0 8px rgba(27, 95, 175, 0.45);
 }
 
 /* ─── 6. Organisation Header ────────────────────────────────────────────────── */
@@ -156,7 +156,8 @@ body {
   border-radius: 10px;
   background: #fff;
   padding: 10px 14px;
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 12px rgba(13, 27, 64, 0.10);
+  border: 1px solid rgba(27, 95, 175, 0.10);
   display: block;
 }
 
@@ -178,7 +179,7 @@ body {
   font-size: 13px;
   font-weight: 500;
   border: 1px solid var(--border-default);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   color: var(--text-tertiary);
   cursor: default;
   transition: var(--transition-fast);
@@ -209,14 +210,14 @@ body {
 }
 
 .step-pill--done {
-  border-color: rgba(52, 211, 153, 0.3);
+  border-color: rgba(5, 150, 105, 0.3);
   color: var(--color-success);
-  background: rgba(52, 211, 153, 0.06);
+  background: rgba(5, 150, 105, 0.06);
 }
 
 .step-pill--done .step-pill__number {
   background: var(--color-success);
-  color: var(--bg-base);
+  color: var(--text-inverse);
 }
 
 .step-connector {
@@ -227,7 +228,7 @@ body {
   max-width: 24px;
 }
 
-/* ─── 7. Form Base ───────────────────────────────────────────────────────────── */
+/* ─── 8. Form Base ───────────────────────────────────────────────────────────── */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -264,7 +265,7 @@ input[type="email"],
 select,
 textarea {
   width: 100%;
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   padding: 12px 16px;
@@ -294,19 +295,19 @@ textarea:focus {
 
 input[type="date"] {
   cursor: pointer;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 select {
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238B95AA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234B5E7A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   padding-right: 40px;
 }
 
 select option {
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   color: var(--text-primary);
 }
 
@@ -330,7 +331,7 @@ textarea {
   padding: 16px 20px;
 }
 
-/* ─── 8. Option Cards ────────────────────────────────────────────────────────── */
+/* ─── 9. Option Cards ────────────────────────────────────────────────────────── */
 .option-card {
   display: flex;
   align-items: center;
@@ -338,7 +339,7 @@ textarea {
   padding: 14px 18px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-default);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   cursor: pointer;
   transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
   position: relative;
@@ -346,8 +347,8 @@ textarea {
 }
 
 .option-card:hover {
-  background: #1a2438;
-  border-color: rgba(255,255,255,0.16);
+  background: var(--bg-elevated);
+  border-color: rgba(27, 95, 175, 0.28);
   transform: scale(1.005);
 }
 
@@ -400,7 +401,7 @@ textarea {
   color: var(--text-primary);
 }
 
-/* ─── 9. Pill Checkboxes ─────────────────────────────────────────────────────── */
+/* ─── 10. Pill Checkboxes ────────────────────────────────────────────────────── */
 .pill-grid {
   display: flex;
   flex-wrap: wrap;
@@ -414,7 +415,7 @@ textarea {
   padding: 6px 14px;
   border-radius: 999px;
   border: 1px solid var(--border-default);
-  background: transparent;
+  background: var(--bg-surface);
   color: var(--text-secondary);
   font-family: 'Satoshi', sans-serif;
   font-size: 13px;
@@ -426,8 +427,9 @@ textarea {
 }
 
 .pill:hover {
-  border-color: rgba(255,255,255,0.2);
-  color: var(--text-primary);
+  border-color: rgba(27, 95, 175, 0.35);
+  color: var(--accent-primary);
+  background: var(--accent-muted);
 }
 
 .pill:focus {
@@ -438,7 +440,7 @@ textarea {
 .pill--selected {
   background: var(--accent-muted);
   border-color: var(--accent-primary);
-  color: var(--text-primary);
+  color: var(--accent-primary);
 }
 
 .pill__check {
@@ -449,7 +451,7 @@ textarea {
 .category-label {
   font-family: 'Satoshi', sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -461,7 +463,7 @@ textarea {
   margin-bottom: 20px;
 }
 
-/* ─── 10. Group Selection Cards ──────────────────────────────────────────────── */
+/* ─── 11. Group Selection Cards ──────────────────────────────────────────────── */
 .group-cards {
   display: flex;
   gap: 16px;
@@ -472,7 +474,7 @@ textarea {
   padding: 28px 24px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-default);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   cursor: pointer;
   transition: background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
   display: flex;
@@ -486,8 +488,8 @@ textarea {
 
 .group-card:hover {
   transform: scale(1.02);
-  box-shadow: 0 0 24px rgba(245, 166, 35, 0.08);
-  border-color: rgba(255,255,255,0.16);
+  box-shadow: 0 4px 20px rgba(27, 95, 175, 0.12);
+  border-color: rgba(27, 95, 175, 0.35);
 }
 
 .group-card:focus {
@@ -544,7 +546,7 @@ textarea {
   color: var(--text-inverse);
 }
 
-/* ─── 11. Buttons ────────────────────────────────────────────────────────────── */
+/* ─── 12. Buttons ────────────────────────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -564,9 +566,9 @@ textarea {
 }
 
 .btn-primary:hover:not(:disabled) {
-  filter: brightness(1.08);
+  filter: brightness(1.1);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(245, 166, 35, 0.3);
+  box-shadow: 0 8px 20px rgba(27, 95, 175, 0.28);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -592,12 +594,13 @@ textarea {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: border-color var(--transition-fast), color var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background var(--transition-fast);
 }
 
 .btn-secondary:hover {
   border-color: var(--border-accent);
-  color: var(--text-primary);
+  color: var(--accent-primary);
+  background: var(--accent-muted);
 }
 
 .btn-secondary:disabled {
@@ -614,7 +617,7 @@ textarea {
   color: var(--text-secondary);
   font-family: 'Satoshi', sans-serif;
   font-size: 13px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: border-color var(--transition-fast), color var(--transition-fast);
@@ -622,17 +625,17 @@ textarea {
 }
 
 .btn-icon:hover {
-  border-color: var(--border-default);
-  color: var(--text-primary);
+  border-color: var(--border-accent);
+  color: var(--accent-primary);
 }
 
-/* ─── 12. Auto-fill Badge ────────────────────────────────────────────────────── */
+/* ─── 13. Auto-fill Badge ────────────────────────────────────────────────────── */
 .badge-autofill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  background: rgba(245, 166, 35, 0.15);
+  background: rgba(27, 95, 175, 0.10);
   border: 1px solid var(--accent-primary);
   border-radius: 999px;
   color: var(--accent-primary);
@@ -647,8 +650,8 @@ textarea {
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  background: rgba(251, 191, 36, 0.10);
-  border: 1px solid rgba(251, 191, 36, 0.40);
+  background: rgba(217, 119, 6, 0.08);
+  border: 1px solid rgba(217, 119, 6, 0.35);
   border-radius: 999px;
   color: var(--color-warning);
   font-family: 'Satoshi', sans-serif;
@@ -656,7 +659,7 @@ textarea {
   animation: fadeIn 200ms ease;
 }
 
-/* ─── 13. Scenario Question Card ─────────────────────────────────────────────── */
+/* ─── 14. Scenario Question Card ─────────────────────────────────────────────── */
 .scenario-section-header {
   margin-bottom: 24px;
 }
@@ -671,8 +674,8 @@ textarea {
 }
 
 .scenario-card--answered {
-  border-color: rgba(52, 211, 153, 0.2);
-  border-top: 2px solid rgba(52, 211, 153, 0.4);
+  border-color: rgba(5, 150, 105, 0.2);
+  border-top: 2px solid rgba(5, 150, 105, 0.4);
 }
 
 .scenario-card__header {
@@ -712,7 +715,7 @@ textarea {
   gap: 8px;
 }
 
-/* ─── 14. Sub-section Dividers ───────────────────────────────────────────────── */
+/* ─── 15. Sub-section Dividers ───────────────────────────────────────────────── */
 .subsection {
   margin-bottom: 40px;
 }
@@ -739,7 +742,7 @@ textarea {
   margin: 36px 0;
 }
 
-/* ─── 15. Step Headings ──────────────────────────────────────────────────────── */
+/* ─── 16. Step Headings ──────────────────────────────────────────────────────── */
 .step-title {
   font-family: 'Clash Display', sans-serif;
   font-size: 32px;
@@ -760,12 +763,14 @@ textarea {
 }
 
 .step-divider {
-  height: 1px;
+  height: 2px;
   background: linear-gradient(90deg, var(--accent-primary), transparent);
   margin: 24px 0 32px;
+  border-radius: 2px;
+  opacity: 0.4;
 }
 
-/* ─── 16. Navigation Row ─────────────────────────────────────────────────────── */
+/* ─── 17. Navigation Row ─────────────────────────────────────────────────────── */
 .nav-row {
   display: flex;
   justify-content: space-between;
@@ -778,7 +783,7 @@ textarea {
   justify-content: flex-end;
 }
 
-/* ─── 17. Review Sections ────────────────────────────────────────────────────── */
+/* ─── 18. Review Sections ────────────────────────────────────────────────────── */
 .review-section {
   margin-bottom: 28px;
 }
@@ -786,7 +791,7 @@ textarea {
 .review-section-title {
   font-family: 'Satoshi', sans-serif;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -834,14 +839,14 @@ textarea {
 }
 
 .review-tag--amber {
-  background: rgba(245, 166, 35, 0.12);
-  border: 1px solid rgba(245, 166, 35, 0.25);
+  background: rgba(27, 95, 175, 0.08);
+  border: 1px solid rgba(27, 95, 175, 0.22);
   color: var(--accent-primary);
 }
 
 .review-tag--cyan {
-  background: rgba(56, 189, 248, 0.10);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(58, 138, 201, 0.08);
+  border: 1px solid rgba(58, 138, 201, 0.22);
   color: var(--accent-secondary);
 }
 
@@ -854,7 +859,7 @@ textarea {
 }
 
 .review-goal {
-  border-left: 2px solid var(--border-accent);
+  border-left: 2px solid var(--accent-primary);
   padding: 10px 14px;
   background: var(--bg-elevated);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
@@ -862,6 +867,7 @@ textarea {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.6;
+  opacity: 0.8;
 }
 
 .collapse-toggle {
@@ -870,12 +876,13 @@ textarea {
   gap: 8px;
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: var(--accent-primary);
   font-family: 'Satoshi', sans-serif;
   font-size: 13px;
   cursor: pointer;
   padding: 0;
   transition: color var(--transition-fast);
+  font-weight: 500;
 }
 
 .collapse-toggle:hover {
@@ -906,7 +913,7 @@ textarea {
   color: var(--text-primary);
 }
 
-/* ─── 18. Submit State ───────────────────────────────────────────────────────── */
+/* ─── 19. Submit State ───────────────────────────────────────────────────────── */
 .submit-footer {
   text-align: center;
   margin-top: 16px;
@@ -943,10 +950,10 @@ textarea {
   animation: pulse 1.5s ease-in-out infinite;
 }
 
-/* ─── 19. Submission Error Banner ────────────────────────────────────────────── */
+/* ─── 20. Submission Error Banner ────────────────────────────────────────────── */
 .error-banner {
-  background: rgba(248, 113, 113, 0.08);
-  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(220, 38, 38, 0.05);
+  border: 1px solid rgba(220, 38, 38, 0.22);
   border-radius: var(--radius-md);
   padding: 16px 20px;
   display: flex;
@@ -970,7 +977,7 @@ textarea {
   flex: 1;
 }
 
-/* ─── 20. AI Result Panel ────────────────────────────────────────────────────── */
+/* ─── 21. AI Result Panel ────────────────────────────────────────────────────── */
 .ai-result {
   animation: fadeIn 400ms ease;
 }
@@ -988,8 +995,8 @@ textarea {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: rgba(52, 211, 153, 0.12);
-  border: 2px solid rgba(52, 211, 153, 0.4);
+  background: rgba(5, 150, 105, 0.10);
+  border: 2px solid rgba(5, 150, 105, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1015,10 +1022,11 @@ textarea {
 }
 
 .ai-result__report {
-  background: #F9FAFB;
+  background: #F8FAFF;
+  border: 1px solid rgba(27, 95, 175, 0.10);
   border-radius: var(--radius-lg);
   padding: 36px 40px;
-  color: #1a202c;
+  color: #0C1B35;
   font-family: 'Satoshi', Georgia, serif;
   font-size: 15px;
   line-height: 1.7;
@@ -1029,10 +1037,10 @@ textarea {
   font-family: 'Clash Display', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #111827;
+  color: #0C1B35;
   margin: 28px 0 10px;
   padding-bottom: 6px;
-  border-bottom: 2px solid #F5A623;
+  border-bottom: 2px solid #1B5FAF;
   line-height: 1.3;
 }
 
@@ -1044,7 +1052,7 @@ textarea {
   font-family: 'Satoshi', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #1a202c;
+  color: #0C1B35;
   margin: 16px 0 6px;
 }
 
@@ -1065,17 +1073,17 @@ textarea {
 
 .ai-result__report strong {
   font-weight: 700;
-  color: #111827;
+  color: #0C1B35;
 }
 
 .ai-result__report a {
-  color: #D97706;
+  color: #1B5FAF;
   text-decoration: underline;
 }
 
 .ai-result__report hr {
   border: none;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(27, 95, 175, 0.12);
   margin: 24px 0;
 }
 
@@ -1090,8 +1098,8 @@ textarea {
 /* ─── Department Recommendation Card ───────────────────────────────────────── */
 
 .dept-rec {
-  background: linear-gradient(135deg, rgba(245, 166, 35, 0.08) 0%, rgba(245, 166, 35, 0.04) 100%);
-  border: 1.5px solid rgba(245, 166, 35, 0.45);
+  background: linear-gradient(135deg, rgba(27, 95, 175, 0.07) 0%, rgba(27, 95, 175, 0.03) 100%);
+  border: 1.5px solid rgba(27, 95, 175, 0.30);
   border-radius: 14px;
   padding: 22px 24px;
   margin: 0 0 28px;
@@ -1102,29 +1110,29 @@ textarea {
   align-items: center;
   gap: 8px;
   margin-bottom: 10px;
-  color: var(--amber);
+  color: var(--accent-primary);
 }
 
 .dept-rec__label {
-  font-family: var(--font-sans);
+  font-family: 'Satoshi', sans-serif;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--amber);
+  color: var(--accent-primary);
 }
 
 .dept-rec__dept {
-  font-family: var(--font-display);
+  font-family: 'Clash Display', sans-serif;
   font-size: 26px;
   font-weight: 700;
-  color: #f0f4ff;
+  color: var(--text-primary);
   line-height: 1.2;
   margin-bottom: 10px;
 }
 
 .dept-rec__reason {
-  font-family: var(--font-sans);
+  font-family: 'Satoshi', sans-serif;
   font-size: 14.5px;
   line-height: 1.65;
   color: var(--text-secondary);
@@ -1132,18 +1140,17 @@ textarea {
 }
 
 .dept-rec__note {
-  font-family: var(--font-sans);
+  font-family: 'Satoshi', sans-serif;
   font-size: 12px;
-  color: var(--text-muted);
-  border-top: 1px solid rgba(245, 166, 35, 0.2);
+  color: var(--text-tertiary);
+  border-top: 1px solid rgba(27, 95, 175, 0.15);
   padding-top: 12px;
   margin: 0;
   font-style: italic;
 }
 
-/* ─── 21. Single-Question-Per-Page Layout ───────────────────────────────────── */
+/* ─── 22. Single-Question-Per-Page Layout ───────────────────────────────────── */
 
-/* Replace step-card animation with question-card (key-based remount) */
 .question-card {
   background: var(--bg-surface);
   border-radius: var(--radius-xl);
@@ -1163,7 +1170,6 @@ textarea {
   animation: slideInLeft 280ms ease-out;
 }
 
-/* Meta row: question counter + optional badge */
 .question-meta {
   display: flex;
   align-items: center;
@@ -1190,11 +1196,10 @@ textarea {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   padding: 3px 9px;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
   border-radius: 999px;
 }
 
-/* The question itself */
 .question-heading {
   font-family: 'Clash Display', sans-serif;
   font-size: 28px;
@@ -1217,7 +1222,6 @@ textarea {
   margin-bottom: 4px;
 }
 
-/* Body area expands to fill card */
 .question-body {
   flex: 1;
   margin-top: 24px;
@@ -1226,7 +1230,6 @@ textarea {
   gap: 12px;
 }
 
-/* Option card grid: 1 or 2 columns */
 .option-cards-grid {
   display: flex;
   flex-direction: column;
@@ -1239,7 +1242,6 @@ textarea {
   gap: 12px;
 }
 
-/* Full-width option card (replaces old OptionCard for per-page use) */
 .option-card-full {
   display: flex;
   align-items: flex-start;
@@ -1247,7 +1249,7 @@ textarea {
   padding: 16px 18px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-default);
-  background: var(--bg-elevated);
+  background: var(--bg-surface);
   cursor: pointer;
   transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
   position: relative;
@@ -1256,8 +1258,8 @@ textarea {
 }
 
 .option-card-full:hover {
-  background: #1a2438;
-  border-color: rgba(255,255,255,0.16);
+  background: var(--bg-elevated);
+  border-color: rgba(27, 95, 175, 0.30);
   transform: scale(1.005);
 }
 
@@ -1317,7 +1319,7 @@ textarea {
 }
 
 .option-card-full--selected .option-card-full__label {
-  color: var(--text-primary);
+  color: var(--accent-primary);
 }
 
 .option-card-full__desc {
@@ -1331,7 +1333,6 @@ textarea {
   color: var(--text-secondary);
 }
 
-/* Square checkbox indicator for multi-select cards */
 .option-card-full__indicator--square {
   border-radius: var(--radius-sm);
 }
@@ -1361,7 +1362,6 @@ textarea {
   color: var(--text-inverse);
 }
 
-/* Selection counter under multi-selects */
 .selection-count {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -1369,7 +1369,6 @@ textarea {
   margin-top: 4px;
 }
 
-/* Navigation row within question card */
 .question-nav {
   display: flex;
   align-items: center;
@@ -1386,7 +1385,6 @@ textarea {
   justify-content: flex-end;
 }
 
-/* Review list */
 .review-list {
   display: flex;
   flex-direction: column;
@@ -1420,14 +1418,14 @@ textarea {
   color: var(--text-primary);
 }
 
-/* ─── 22. Form vertical stack spacing ───────────────────────────────────────── */
+/* ─── 23. Form vertical stack spacing ───────────────────────────────────────── */
 .form-stack {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* ─── 22. Print Styles ───────────────────────────────────────────────────────── */
+/* ─── 24. Print Styles ───────────────────────────────────────────────────────── */
 @media print {
   body * { visibility: hidden; }
   .ai-result__report,
@@ -1442,7 +1440,7 @@ textarea {
     left: 0;
     width: 100%;
     background: white;
-    color: black;
+    color: #0C1B35;
     padding: 40px;
     font-size: 13px;
     border-radius: 0;
@@ -1450,7 +1448,7 @@ textarea {
   }
 }
 
-/* ─── 23. Responsive ─────────────────────────────────────────────────────────── */
+/* ─── 25. Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .form-wrapper {
     padding: 20px 16px 48px;
@@ -1518,7 +1516,7 @@ textarea {
   }
 }
 
-/* ─── 24. Reduced Motion ─────────────────────────────────────────────────────── */
+/* ─── 26. Reduced Motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .step-card--forward,
   .step-card--back,
