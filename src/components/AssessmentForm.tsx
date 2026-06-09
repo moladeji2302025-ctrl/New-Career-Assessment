@@ -194,6 +194,14 @@ export default function AssessmentForm() {
     <div className="app-root">
       <ProgressBar step={progressStep} totalSteps={progressTotal} />
 
+      <header className="org-header">
+        <img
+          src="/nigcomsat-logo.png"
+          alt="NigComSat — African Rooted, Globally Positioned"
+          className="org-header__logo"
+        />
+      </header>
+
       <div className="form-wrapper">
         {showReview ? (
           <div className="step-card step-card--forward" key="review">

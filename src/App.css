@@ -141,7 +141,26 @@ body {
   box-shadow: 0 0 8px rgba(245, 166, 35, 0.6);
 }
 
-/* ─── 6. Step Indicator ──────────────────────────────────────────────────────── */
+/* ─── 6. Organisation Header ────────────────────────────────────────────────── */
+
+.org-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 28px 24px 8px;
+}
+
+.org-header__logo {
+  width: 140px;
+  height: auto;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px 14px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+  display: block;
+}
+
+/* ─── 7. Step Indicator ──────────────────────────────────────────────────────── */
 .step-indicator {
   display: flex;
   align-items: center;
@@ -1413,9 +1432,13 @@ textarea {
   body * { visibility: hidden; }
   .ai-result__report,
   .ai-result__report * { visibility: visible; }
+  .dept-rec,
+  .dept-rec * { visibility: visible; }
+  .org-header,
+  .org-header * { visibility: visible; }
   .ai-result__report {
     position: fixed;
-    top: 0;
+    top: 80px;
     left: 0;
     width: 100%;
     background: white;
