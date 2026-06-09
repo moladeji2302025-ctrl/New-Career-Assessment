@@ -34,19 +34,50 @@ async function ensureTable(sql: ReturnType<typeof neon>) {
       short_term_goal          TEXT        NOT NULL,
       long_term_goal           TEXT        NOT NULL,
       scenario_responses       JSONB       NOT NULL DEFAULT '{}',
-      ai_report                TEXT
+      ai_report                TEXT,
+      recommended_department   TEXT,
+      department_reason        TEXT
     )
   `;
+  // Migrate existing tables that predate the department recommendation columns
+  await sql`ALTER TABLE assessments ADD COLUMN IF NOT EXISTS recommended_department TEXT`;
+  await sql`ALTER TABLE assessments ADD COLUMN IF NOT EXISTS department_reason TEXT`;
 }
 
-async function generateAIReport(payload: Record<string, unknown>): Promise<string> {
+const NIGCOMSAT_DEPARTMENTS = [
+  { name: "MD's office",                 description: 'Executive management, corporate strategy, and governance' },
+  { name: 'Procurement',                 description: 'Vendor management, procurement processes, and supply chain' },
+  { name: 'Technical services',          description: 'Satellite technical operations, engineering support, and maintenance of space assets' },
+  { name: 'Innovation',                  description: 'R&D, new technology initiatives, and digital transformation projects' },
+  { name: 'IT',                          description: 'Information technology infrastructure, software systems, and internal ICT support' },
+  { name: 'SCC',                         description: 'Satellite Control Center — controlling and monitoring NigComSat satellites in orbit' },
+  { name: 'NOC',                         description: 'Network Operations Center — monitoring and maintaining telecommunications network uptime' },
+  { name: 'Broadband',                   description: 'Broadband internet services design, deployment, and customer connectivity solutions' },
+  { name: 'Human capital management/HR', description: 'People management, recruitment, training, learning & development, and employee relations' },
+  { name: 'Account',                     description: 'Financial accounting, reporting, payroll, and treasury management' },
+  { name: 'Audit',                       description: 'Internal audit, compliance, and enterprise risk management' },
+  { name: 'Admin',                       description: 'Administrative support, office management, and facilities coordination' },
+  { name: 'Maintenance',                 description: 'Physical infrastructure maintenance, building services, and equipment servicing' },
+];
+
+const DEPT_LIST = NIGCOMSAT_DEPARTMENTS
+  .map(d => `- ${d.name}: ${d.description}`)
+  .join('\n');
+
+interface DepartmentRecommendation {
+  aiReport: string;
+  recommendedDepartment: string;
+  departmentReason: string;
+}
+
+async function generateAIReport(payload: Record<string, unknown>): Promise<DepartmentRecommendation> {
   const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
   const group = payload.respondentGroup === 'IT_STUDENT' ? 'IT Student (intern)' : 'NYSC Corp Member';
   const name = payload.respondentName as string;
 
   const userPrompt = `
-You are an expert career guidance counsellor with deep knowledge of the Nigerian graduate job market, NYSC, and tech industry career paths across Africa. You have just received a completed career assessment from a ${group} named ${name}.
+You are an expert career guidance counsellor with deep knowledge of the Nigerian graduate job market, NYSC, and tech industry career paths across Africa. You have just received a completed career assessment from a ${group} named ${name} at NigComSat (Nigerian Communications Satellite Limited).
 
 Here is their full assessment data:
 ${JSON.stringify(payload, null, 2)}
@@ -82,17 +113,51 @@ Important guidelines:
 - Keep the total report between 700–1000 words
 - Use markdown formatting (headings, bold, bullet points) that will render cleanly
 - Write for a Nigerian/African professional context
+
+---
+
+After all the report sections above, append the following block EXACTLY as shown (with the markers on their own lines). This is for NigComSat's HR team to determine the most suitable department posting for this individual:
+
+---DEPT_REC_START---
+{"department": "<one department name from the list below>", "reason": "<2–3 sentences explaining why this department is the best fit, referencing specific answers from the assessment>"}
+---DEPT_REC_END---
+
+NigComSat departments to choose from (pick exactly one):
+${DEPT_LIST}
+
+The recommendation must be based on the person's career interests, skills, working style, personality, and goals — not on their currently assigned department.
 `;
 
   const response = await client.messages.create({
     model: 'claude-sonnet-4-6',
-    max_tokens: 2000,
+    max_tokens: 2500,
     messages: [{ role: 'user', content: userPrompt }],
   });
 
   const content = response.content[0];
   if (content.type !== 'text') throw new Error('Unexpected AI response type');
-  return content.text;
+
+  const raw = content.text;
+
+  // Extract the department recommendation block
+  const deptMatch = raw.match(/---DEPT_REC_START---\s*([\s\S]*?)\s*---DEPT_REC_END---/);
+  let recommendedDepartment = '';
+  let departmentReason = '';
+  let aiReport = raw;
+
+  if (deptMatch) {
+    try {
+      const rec = JSON.parse(deptMatch[1].trim()) as { department: string; reason: string };
+      recommendedDepartment = rec.department ?? '';
+      departmentReason = rec.reason ?? '';
+    } catch {
+      // JSON parse failed — leave recommendation empty
+    }
+    // Strip the block from the displayed report
+    aiReport = raw.replace(/\n*---DEPT_REC_START---[\s\S]*?---DEPT_REC_END---\n*/g, '').trim();
+  }
+
+  return { aiReport, recommendedDepartment, departmentReason };
 }
 
 function validatePayload(payload: Record<string, unknown>): string | null {
@@ -131,7 +196,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const sql = neon(process.env.DATABASE_URL!);
-    const [aiReport] = await Promise.all([
+    const [{ aiReport, recommendedDepartment, departmentReason }] = await Promise.all([
       generateAIReport(payload),
       ensureTable(sql),
     ]);
@@ -145,7 +210,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         program_studied, degree_required, service_end_date,
         career_interests, enjoyed_skills, work_environment,
         primary_motivation, biggest_strength, short_term_goal, long_term_goal,
-        scenario_responses, ai_report
+        scenario_responses, ai_report, recommended_department, department_reason
       ) VALUES (
         ${id},
         ${payload.respondentName as string},
@@ -164,11 +229,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ${payload.shortTermGoal as string},
         ${payload.longTermGoal as string},
         ${JSON.stringify(payload.scenarioResponses ?? {})},
-        ${aiReport}
+        ${aiReport},
+        ${recommendedDepartment || null},
+        ${departmentReason || null}
       )
     `;
 
-    return res.status(201).json({ id, submittedAt: new Date().toISOString(), aiReport });
+    return res.status(201).json({
+      id,
+      submittedAt: new Date().toISOString(),
+      aiReport,
+      recommendedDepartment,
+      departmentReason,
+    });
   } catch (error) {
     console.error('Assessment submission error:', error);
     return res.status(500).json({ detail: 'Failed to process assessment. Please try again.' });

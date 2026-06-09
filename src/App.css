@@ -1068,6 +1068,60 @@ textarea {
   padding-top: 8px;
 }
 
+/* ─── Department Recommendation Card ───────────────────────────────────────── */
+
+.dept-rec {
+  background: linear-gradient(135deg, rgba(245, 166, 35, 0.08) 0%, rgba(245, 166, 35, 0.04) 100%);
+  border: 1.5px solid rgba(245, 166, 35, 0.45);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin: 0 0 28px;
+}
+
+.dept-rec__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--amber);
+}
+
+.dept-rec__label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.dept-rec__dept {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: #f0f4ff;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+.dept-rec__reason {
+  font-family: var(--font-sans);
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0 0 14px;
+}
+
+.dept-rec__note {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(245, 166, 35, 0.2);
+  padding-top: 12px;
+  margin: 0;
+  font-style: italic;
+}
+
 /* ─── 21. Single-Question-Per-Page Layout ───────────────────────────────────── */
 
 /* Replace step-card animation with question-card (key-based remount) */

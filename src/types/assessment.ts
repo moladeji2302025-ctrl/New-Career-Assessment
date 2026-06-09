@@ -77,4 +77,6 @@ export interface SubmissionResult {
   id: string;
   submittedAt: string;
   aiReport: string;
+  recommendedDepartment: string;
+  departmentReason: string;
 }
